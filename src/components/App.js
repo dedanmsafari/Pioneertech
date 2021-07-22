@@ -13,6 +13,7 @@ import MobileApps from './MobileApps';
 import Websites from './Websites';
 import Revolution from './Revolution';
 import About from './About';
+import Contact from './Contact';
 
 function App() {
   const [value, setValue] = useState(0);
@@ -107,7 +108,13 @@ function App() {
           <Route
             exact
             path='/contact'
-            component={() => <div>Contact Us</div>}
+            render={(props) => (
+              <Contact
+                {...props}
+                setValue={setValue}
+                setSelectedIndex={setSelectedIndex}
+              />
+            )}
           />
           <Route exact path='/estimate' component={() => <div>Estimate</div>} />
         </Switch>
