@@ -19,7 +19,9 @@ import {
   List,
   ListItem,
   ListItemText,
+
 } from '@material-ui/core';
+
 import MenuIcon from '@material-ui/icons/Menu';
 import logo from '../../assets/CenterLogo.svg';
 
@@ -44,10 +46,8 @@ const useStyles = makeStyles((theme) => ({
   drawerIcon: {
     width: '35px',
     height: '35px',
-    
   },
   drawerIconContainer: {
-  
     marginLeft: 'auto',
     '&:hover': {
       backgroundColor: 'transparent',
@@ -89,7 +89,7 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   toolbar: {
-   // marginBottom: '1em',
+    // marginBottom: '1em',
     [theme.breakpoints.down('md')]: {
       marginBottom: '0.10em',
     },
@@ -140,6 +140,7 @@ const Header = ({ value, setValue, selectedIndex, setSelectedIndex }) => {
 
   const [anchorEl, setAnchorEl] = useState(null);
   const [openMenu, setOpenMenu] = useState(false);
+  
 
   const menuOptions = [
     { name: 'Services', link: '/services', activeIndex: 1, selectedIndex: 0 },
