@@ -8,6 +8,8 @@ import {
   useTheme,
   Button,
   TextField,
+  Dialog,
+  DialogContent,
 } from '@material-ui/core';
 
 import ButtonArrow from './ui/ButtonArrow';
@@ -94,6 +96,8 @@ export default function Contact({ setValue }) {
 
   const [message, setMessage] = useState('');
 
+  const [open, setOpen] = useState(false);
+
   const onChange = (event) => {
     let valid;
 
@@ -173,12 +177,17 @@ export default function Contact({ setValue }) {
                 <Typography
                   variant='body1'
                   style={{
-                    color: theme.palette.common.green,
+                    color: theme.palette.common.Green,
                     fontSize: '1rem',
                   }}
                 >
-                  {' '}
-                  (+254) 723-275-041
+                  <a
+                    href='tel: (+254) 723-275-041'
+                    style={{ textDecoration: 'none', color: 'inherit' }}
+                  >
+                    {' '}
+                    (+254) 723-275-041
+                  </a>
                 </Typography>
               </Grid>
             </Grid>
@@ -194,11 +203,16 @@ export default function Contact({ setValue }) {
                 <Typography
                   variant='body1'
                   style={{
-                    color: theme.palette.common.green,
+                    color: theme.palette.common.Green,
                     fontSize: '1rem',
                   }}
                 >
-                  dedan.msafari@gmail.com
+                  <a
+                    href='mailto:dedan.msafari@gmail.com'
+                    style={{ textDecoration: 'none', color: 'inherit' }}
+                  >
+                    dedan.msafari@gmail.com
+                  </a>
                 </Typography>
               </Grid>
             </Grid>
@@ -248,7 +262,19 @@ export default function Contact({ setValue }) {
               />
             </Grid>
             <Grid item container justify='center' style={{ marginTop: '2em' }}>
-              <Button variant='contained' className={classes.sendButton}>
+              <Button
+                disabled={
+                  emailHelper.length !== 0 ||
+                  phoneHelper.length !== 0 ||
+                  name.length === 0 ||
+                  phone.length === 0 ||
+                  message.length === 0 ||
+                  email.length === 0
+                }
+                variant='contained'
+                className={classes.sendButton}
+                onClick={() => setOpen(true)}
+              >
                 Send Message{' '}
                 <img
                   src={airplane}
@@ -260,6 +286,106 @@ export default function Contact({ setValue }) {
           </Grid>
         </Grid>
       </Grid>
+
+      <Dialog
+        open={open}
+        onClose={() => setOpen(false)}
+        PaperProps={{
+          style: {
+            paddingTop: matchesXS ? '1em' : '2em',
+            paddingBottom: matchesXS ? '1em' : '2em',
+            paddingLeft: matchesXS ? 0 : matchesSM ? '5em' : matchesMD ? '7em':'10em',
+            paddingRight:  matchesXS ? 0 : matchesSM ? '5em' : matchesMD ? '7em': '10em',
+          },
+        }}
+      >
+        <DialogContent>
+          <Grid container direction='column' >
+            <Grid item>
+              <Typography align='center' variant='h4' gutterBottom>
+                Confirm Message
+              </Typography>
+            </Grid>
+
+            <Grid item style={{ marginBottom: '0.5em' }}>
+              <TextField
+                label='Name'
+                id='name'
+                fullWidth
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+              />
+            </Grid>
+            <Grid item style={{ marginBottom: '0.5em' }}>
+              <TextField
+                label='Email'
+                error={emailHelper.length !== 0}
+                helperText={emailHelper}
+                id='email'
+                fullWidth
+                value={email}
+                onChange={onChange}
+              />
+            </Grid>
+            <Grid item style={{ marginBottom: '0.5em' }}>
+              <TextField
+                label='Phone'
+                error={phoneHelper.length !== 0}
+                helperText={phoneHelper}
+                fullWidth
+                id='phone'
+                value={phone}
+                onChange={onChange}
+              />
+            </Grid>
+            <Grid item style={{ maxWidth: '20em' }}>
+              <TextField
+                InputProps={{ disableUnderline: true }}
+                id='message'
+                multiline
+                fullWidth
+                rows={10}
+                className={classes.message}
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+              />
+            </Grid>
+          </Grid>
+          <Grid item container alignItems='center' style={{ marginTop: '2em' }}>
+            <Grid item>
+              <Button
+                style={{ fontWeight: 300 }}
+                color='primary'
+                onClick={() => setOpen(false)}
+              >
+                Cancel
+              </Button>
+            </Grid>
+            <Grid item>
+              <Button
+                disabled={
+                  emailHelper.length !== 0 ||
+                  phoneHelper.length !== 0 ||
+                  name.length === 0 ||
+                  phone.length === 0 ||
+                  message.length === 0 ||
+                  email.length === 0
+                }
+                variant='contained'
+                className={classes.sendButton}
+                onClick={() => setOpen(true)}
+              >
+                Send Message{' '}
+                <img
+                  src={airplane}
+                  alt='paper airplane'
+                  style={{ marginLeft: '1em' }}
+                />
+              </Button>
+            </Grid>
+          </Grid>
+        </DialogContent>
+      </Dialog>
 
       <Grid
         item
