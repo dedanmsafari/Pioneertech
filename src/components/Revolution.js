@@ -222,7 +222,7 @@ export default function Revolution({ setValue, setSelectedIndex }) {
         <Grid item container justify={matchesMD ? 'center' : 'flex-end'} lg>
           <Lottie
             options={defaultOptions}
-            style={{ maxWidth: '40em', margin: 0 }}
+            style={{ maxWidth: matchesXS ? 205 : '40em', margin: 0 }}
           />
         </Grid>
       </Grid>
@@ -708,7 +708,7 @@ export default function Revolution({ setValue, setSelectedIndex }) {
             src={launch}
             alt='Space rocket ready for takeOff'
             width='100%'
-            style={{ maxWidth: 200 }}
+            style={{ maxWidth: matchesXS ? 100 : 200 }}
           />
         </Grid>
       </Grid>
