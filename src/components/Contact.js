@@ -63,7 +63,7 @@ const useStyles = makeStyles((theme) => ({
   },
   message: {
     border: `2px solid ${theme.palette.common.Green}`,
-    marginTop: '5em',
+    marginTop: '2em',
     borderRadius: 5,
   },
   sendButton: {
@@ -75,6 +75,10 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: theme.palette.common.Orange,
     '&:hover': {
       backgroundColor: theme.palette.secondary.light,
+    },
+    [theme.breakpoints.down('sm')]: {
+      height: 40,
+      width: 200,
     },
   },
 }));
@@ -288,19 +292,37 @@ export default function Contact({ setValue }) {
       </Grid>
 
       <Dialog
+        style={{ zIndex: 1302 }}
         open={open}
+        fullScreen={matchesXS}
         onClose={() => setOpen(false)}
         PaperProps={{
           style: {
             paddingTop: matchesXS ? '1em' : '2em',
             paddingBottom: matchesXS ? '1em' : '2em',
-            paddingLeft: matchesXS ? 0 : matchesSM ? '5em' : matchesMD ? '7em':'10em',
-            paddingRight:  matchesXS ? 0 : matchesSM ? '5em' : matchesMD ? '7em': '10em',
+            paddingLeft: matchesXS
+              ? 0
+              : matchesSM
+              ? '5em'
+              : matchesMD
+              ? '8em'
+              : '10em',
+            paddingRight: matchesXS
+              ? 0
+              : matchesSM
+              ? '5em'
+              : matchesMD
+              ? '8em'
+              : '10em',
           },
         }}
       >
         <DialogContent>
-          <Grid container direction='column' >
+          <Grid
+            container
+            direction='column'
+            // style={{ width: matchesXS ? '20em' : '20em', maxWidth: '50em' }}
+          >
             <Grid item>
               <Typography align='center' variant='h4' gutterBottom>
                 Confirm Message
@@ -338,7 +360,7 @@ export default function Contact({ setValue }) {
                 onChange={onChange}
               />
             </Grid>
-            <Grid item style={{ maxWidth: '20em' }}>
+            <Grid item style={{ maxWidth: matchesXS ? '100%' : '20em' }}>
               <TextField
                 InputProps={{ disableUnderline: true }}
                 id='message'
@@ -351,7 +373,13 @@ export default function Contact({ setValue }) {
               />
             </Grid>
           </Grid>
-          <Grid item container alignItems='center' style={{ marginTop: '2em' }}>
+          <Grid
+            item
+            container
+            direction={matchesSM ? 'column' : 'row'}
+            alignItems='center'
+            style={{ marginTop: '1em' }}
+          >
             <Grid item>
               <Button
                 style={{ fontWeight: 300 }}
