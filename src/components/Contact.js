@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import axios from 'axios';
 import { Link } from 'react-router-dom';
 import {
   Grid,
@@ -134,6 +135,17 @@ export default function Contact({ setValue }) {
       default:
         break;
     }
+  };
+  const onConfirm = () => {
+    setOpen(false);
+    axios
+      .get('https://us-central1-pioneertechemail.cloudfunctions.net/sendMail')
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
 
   return (
@@ -401,7 +413,7 @@ export default function Contact({ setValue }) {
                 }
                 variant='contained'
                 className={classes.sendButton}
-                onClick={() => setOpen(true)}
+                onClick={onConfirm}
               >
                 Send Message{' '}
                 <img
