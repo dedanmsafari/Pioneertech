@@ -11,6 +11,8 @@ import {
   TextField,
   Dialog,
   DialogContent,
+  CircularProgress,
+  Snackbar,
 } from '@material-ui/core';
 
 import ButtonArrow from './ui/ButtonArrow';
@@ -102,6 +104,13 @@ export default function Contact({ setValue }) {
   const [message, setMessage] = useState('');
 
   const [open, setOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  const [alert, setAlert] = useState({
+    open: false,
+    message: '',
+    backgroundColor: '',
+  });
 
   const onChange = (event) => {
     let valid;
@@ -137,16 +146,40 @@ export default function Contact({ setValue }) {
     }
   };
   const onConfirm = () => {
-    setOpen(false);
+    setLoading(true);
     axios
-      .get('https://us-central1-pioneertechemail.cloudfunctions.net/sendMail')
+      .get('https://us-central1-pioneertechemail.cloudfunctions.net/sendMail', {
+        params: { name, email, phone, message },
+      })
       .then((res) => {
-        console.log(res);
+        setLoading(false);
+        setOpen(false);
+        setName('');
+        setEmail('');
+        setPhone('');
+        setMessage('');
+        setAlert({
+          open: true,
+          message: 'Message Sent!',
+          backgroundColor: '#4BB543',
+        });
       })
       .catch((err) => {
-        console.log(err);
+        setLoading(false);
+        setAlert({
+          open: true,
+          message: 'Message failed to send. Please try again',
+          backgroundColor: '#FF3232',
+        });
       });
   };
+
+  const buttonContents = (
+    <React.Fragment>
+      Send Message{' '}
+      <img src={airplane} alt='paper airplane' style={{ marginLeft: '1em' }} />
+    </React.Fragment>
+  );
 
   return (
     <Grid container direction='row'>
@@ -227,7 +260,7 @@ export default function Contact({ setValue }) {
                     href='mailto:dedan.msafari@gmail.com'
                     style={{ textDecoration: 'none', color: 'inherit' }}
                   >
-                    dedan.msafari@gmail.com
+                    demsaftech@gmail.com
                   </a>
                 </Typography>
               </Grid>
@@ -291,12 +324,7 @@ export default function Contact({ setValue }) {
                 className={classes.sendButton}
                 onClick={() => setOpen(true)}
               >
-                Send Message{' '}
-                <img
-                  src={airplane}
-                  alt='paper airplane'
-                  style={{ marginLeft: '1em' }}
-                />
+                {buttonContents}
               </Button>
             </Grid>
           </Grid>
@@ -415,17 +443,29 @@ export default function Contact({ setValue }) {
                 className={classes.sendButton}
                 onClick={onConfirm}
               >
-                Send Message{' '}
-                <img
-                  src={airplane}
-                  alt='paper airplane'
-                  style={{ marginLeft: '1em' }}
-                />
+                {loading ? (
+                  <CircularProgress size={30} color='white' />
+                ) : (
+                  buttonContents
+                )}
               </Button>
             </Grid>
           </Grid>
         </DialogContent>
       </Dialog>
+
+      <Snackbar
+        open={alert.open}
+        message={alert.message}
+        ContentProps={{
+          style: {
+            backgroundColor: alert.backgroundColor,
+          },
+        }}
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+        onClose={() => setAlert({ ...alert, open: false })}
+        autoHideDuration={4000}
+      />
 
       <Grid
         item
