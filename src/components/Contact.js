@@ -149,7 +149,7 @@ export default function Contact({ setValue }) {
     setLoading(true);
     axios
       .get('https://us-central1-pioneertechemail.cloudfunctions.net/sendMail', {
-        params: { name, email, phone, message },
+        params: { name: name, email: email, phone: phone, message: message },
       })
       .then((res) => {
         setLoading(false);
@@ -171,6 +171,7 @@ export default function Contact({ setValue }) {
           message: 'Message failed to send. Please try again',
           backgroundColor: '#FF3232',
         });
+        console.log(err);
       });
   };
 
@@ -444,7 +445,7 @@ export default function Contact({ setValue }) {
                 onClick={onConfirm}
               >
                 {loading ? (
-                  <CircularProgress size={30} color='white' />
+                  <CircularProgress size={30} color='primary' />
                 ) : (
                   buttonContents
                 )}
@@ -464,7 +465,7 @@ export default function Contact({ setValue }) {
         }}
         anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
         onClose={() => setAlert({ ...alert, open: false })}
-        autoHideDuration={4000}
+        autoHideDuration={3000}
       />
 
       <Grid
