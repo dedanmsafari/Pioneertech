@@ -2,7 +2,6 @@ import React from 'react';
 import {
   Grid,
   Hidden,
-  IconButton,
   useMediaQuery,
   makeStyles,
   useTheme,
@@ -50,8 +49,6 @@ export default function About({ setValue }) {
   const classes = useStyles();
   const theme = useTheme();
   const matchesMD = useMediaQuery(theme.breakpoints.down('md'));
-  const matchesSM = useMediaQuery(theme.breakpoints.down('sm'));
-  const matchesXS = useMediaQuery(theme.breakpoints.down('xs'));
 
   return (
     <Grid container direction='column'>
