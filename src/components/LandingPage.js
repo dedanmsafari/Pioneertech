@@ -468,7 +468,7 @@ export default function LandingPage({ setValue, setSelectedIndex }) {
                   Contact Us
                 </Typography>
                 <Typography variant='subtitle2' gutterBottom>
-                  Say Hello! 👋🙂
+                  Say Hello! <span role='img' aria-label='hand and smile emoji'>👋🙂</span>
                 </Typography>
                 <Grid item>
                   <Button
