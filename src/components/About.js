@@ -10,7 +10,7 @@ import {
 } from '@material-ui/core';
 
 import history from '../assets/history.svg';
-import profile from '../assets/founder.jpg';
+import profile from '../assets/skywardprof.png';
 import yearbook from '../assets/yearbook.svg';
 import puppy from '../assets/puppy.svg';
 import CallToAction from './ui/CallToAction';
@@ -188,7 +188,7 @@ export default function About({ setValue }) {
           <Typography variant='body1' align='center'>
             It always starts with a dream,then a vision.Pioneering technology
             has never been an easy task.But together we can achieve great things
-            and reach the Horizons
+            and reach the Sky.
           </Typography>
         </Grid>
         <Grid item>
@@ -200,14 +200,16 @@ export default function About({ setValue }) {
           <Hidden lgUp>
             <Grid item lg style={{ maxWidth: '45em', padding: '1.25em' }}>
               <Typography variant='body1' align='center' paragraph>
-                I taught myself basic coding from a library book in third grade,
-                and ever since then my passion has solely been set on learning —
-                learning about computers, learning mathematics and philosophy,
-                studying design, always just learning.
+                After completing my bachelors in computer Science, I made it my
+                goal to make tech services accessible across Africa and
+                beyond.This was the beginning of Demsaf and since then we have
+                made every effort possible to transform technology with every
+                product and service we offer.
               </Typography>
               <Typography variant='body1' align='center' paragraph>
-                Now I’m ready to apply everything I’ve learned, and to help
-                others with the intuition I have developed.
+                Now we work together applying every resource at our disposal to
+                help improve and innovate technological services across the
+                world.
               </Typography>
             </Grid>
           </Hidden>
@@ -237,14 +239,16 @@ export default function About({ setValue }) {
           <Hidden mdDown>
             <Grid item lg style={{ maxWidth: '45em', padding: '1.25em' }}>
               <Typography variant='body1' align='center' paragraph>
-                I taught myself basic coding from a library book in third grade,
-                and ever since then my passion has solely been set on learning —
-                learning about computers, learning mathematics and philosophy,
-                studying design, always just learning.
+                After completing my bachelors in computer Science, I made it my
+                goal to make tech services accessible across Africa and
+                beyond.This was the beginning of Demsaf and since then we have
+                made every effort possible to transform technology with every
+                product and service we offer.
               </Typography>
               <Typography variant='body1' align='center' paragraph>
-                Now I’m ready to apply everything I’ve learned, and to help
-                others with the intuition I have developed.
+                Now we work together applying every resource at our disposal to
+                help improve and innovate technological services across the
+                world.
               </Typography>
             </Grid>
           </Hidden>
