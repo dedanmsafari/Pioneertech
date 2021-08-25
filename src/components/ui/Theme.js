@@ -54,6 +54,12 @@ const theme = createMuiTheme({
       fontWeight: 700,
       fontSize: '1.75rem',
     },
+    h6: {
+      fontFamily: 'Cabin',
+      color: localGreen,
+      fontWeight: '500',
+      lineHeight: 1,
+    },
     subtitle1: {
       fontFamily: 'Lato',
       fontSize: '1.25rem',
