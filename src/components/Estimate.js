@@ -44,6 +44,7 @@ import android from '../assets/android.svg';
 import globe from '../assets/globe.svg';
 import biometrics from '../assets/biometrics.svg';
 import estimateAnimation from '../animations/estimateAnimation/data.json';
+import { set } from 'harmony-reflect';
 
 const useStyles = makeStyles((theme) => ({
   icon: {
@@ -66,12 +67,12 @@ const useStyles = makeStyles((theme) => ({
 
 const defaultQuestions = [
   {
-    id: '1',
+    id: 1,
     title: 'Which service are you interested in?',
     active: true,
     options: [
       {
-        id: '1',
+        id: 1,
         title: 'Custom Software Development',
         subtitle: null,
         icon: software,
@@ -80,7 +81,7 @@ const defaultQuestions = [
         cost: 0,
       },
       {
-        id: '2',
+        id: 2,
         title: 'iOS/Android App Development',
         subtitle: null,
         icon: mobile,
@@ -89,7 +90,7 @@ const defaultQuestions = [
         cost: 0,
       },
       {
-        id: '3',
+        id: 3,
         title: 'Website Development',
         subtitle: null,
         icon: website,
@@ -327,6 +328,7 @@ export default function Estimate() {
   const matchesXS = useMediaQuery(theme.breakpoints.down('xs'));
 
   const [questions, setQuestions] = useState(defaultQuestions);
+
   const defaultOptions = {
     loop: true,
     autoplay: true,
@@ -337,7 +339,93 @@ export default function Estimate() {
   };
 
   const nextQuestion = () => {
+    {
+      /*
+    clone the questions array
+    find the active question
+    find index of active question
+    find index of next question
+    set current question to false active
+    set next question to true active
+    return new questions array
+    */
+    }
     const newQuestions = cloneDeep(questions);
+    const currentlyActive = newQuestions.filter((question) => question.active);
+    const activeIndex = currentlyActive[0].id - 1;
+    const nextIndex = activeIndex + 1;
+
+    newQuestions[activeIndex] = { ...currentlyActive[0], active: false };
+    newQuestions[nextIndex] = { ...newQuestions[nextIndex], active: true };
+
+    setQuestions(newQuestions);
+  };
+
+  const previousQuestion = () => {
+    const newQuestions = cloneDeep(questions);
+    const currentlyActive = newQuestions.filter((question) => question.active);
+    const activeIndex = currentlyActive[0].id - 1;
+    const previousIndex = activeIndex - 1;
+
+    newQuestions[activeIndex] = { ...currentlyActive[0], active: false };
+    newQuestions[previousIndex] = {
+      ...newQuestions[previousIndex],
+      active: true,
+    };
+
+    setQuestions(newQuestions);
+  };
+
+  const navigationPreviousDisabled = () => {
+    const currentlyActive = questions.filter((question) => question.active);
+
+    return currentlyActive[0].id === 1 ? true : false;
+  };
+  const navigationNextDisabled = () => {
+    const currentlyActive = questions.filter((question) => question.active);
+    return currentlyActive[0].id === questions[questions.length - 1].id
+      ? true
+      : false;
+  };
+
+  const handleSelect = (id) => {
+    const newQuestions = cloneDeep(questions);
+    const currentlyActive = newQuestions.filter((question) => question.active);
+    const activeIndex = currentlyActive[0].id - 1;
+
+    const newSelected = newQuestions[activeIndex].options[id - 1];
+    const previousSelected = currentlyActive[0].options.filter(
+      (option) => option.selected
+    );
+
+    switch (currentlyActive[0].subtitle) {
+      case 'Select one.':
+        if (previousSelected[0]) {
+          previousSelected[0].selected = !previousSelected[0].selected;
+        }
+        newSelected.selected = !newSelected.selected;
+        break;
+
+      default:
+        newSelected.selected = !newSelected.selected;
+        break;
+    }
+    switch (newSelected.title) {
+      case 'Custom Software Development':
+        setQuestions(softwareQuestions);
+        break;
+
+      case 'iOS/Android App Development':
+        setQuestions(softwareQuestions);
+        break;
+
+      case 'Website Development':
+        setQuestions(websiteQuestions);
+        break;
+
+      default:
+        setQuestions(newQuestions);
+    }
   };
   return (
     <Grid container direction='row'>
@@ -360,7 +448,7 @@ export default function Estimate() {
         lg
         style={{ marginRight: '2em', marginBottom: '25em' }}
       >
-        {defaultQuestions
+        {questions
           .filter((question) => question.active === true)
           .map((question, index) => (
             <React.Fragment key={index}>
@@ -372,6 +460,7 @@ export default function Estimate() {
                     fontWeight: 500,
                     fontSize: '2.25rem',
                     marginTop: '5em',
+                    lineHeight: '1.25em',
                   }}
                 >
                   {question.title}
@@ -387,8 +476,24 @@ export default function Estimate() {
               </Grid>
               <Grid item container>
                 {question.options.map((option) => (
-                  <Grid item container direction='column' md key={option.id}>
-                    <Grid item style={{ maxWidth: '12em' }}>
+                  <Grid
+                    item
+                    container
+                    direction='column'
+                    md
+                    key={option.id}
+                    component={Button}
+                    onClick={() => handleSelect(option.id)}
+                    style={{
+                      display: 'grid',
+                      textTransform: 'none',
+                      borderRadius: 0,
+                      backgroundColor: option.selected
+                        ? theme.palette.secondary.light
+                        : null,
+                    }}
+                  >
+                    <Grid item style={{ maxWidth: '14em' }}>
                       <Typography
                         variant='h6'
                         align='center'
@@ -396,7 +501,7 @@ export default function Estimate() {
                       >
                         {option.title}
                       </Typography>
-                      <Typography variant='caption' align='center'>
+                      <Typography variant='caption' alignItems='center'>
                         {option.subtitle}
                       </Typography>
                     </Grid>
@@ -417,13 +522,33 @@ export default function Estimate() {
           item
           container
           justify='space-between'
-          style={{ width: '15em', marginTop: '3em' }}
+          style={{ width: '18em', marginTop: '3em' }}
         >
           <Grid item>
-            <img src={backArrow} alt='previous question' />
+            <IconButton
+              disabled={navigationPreviousDisabled()}
+              onClick={previousQuestion}
+            >
+              <img
+                src={
+                  navigationPreviousDisabled() ? backArrowDisabled : backArrow
+                }
+                alt='previous question'
+              />
+            </IconButton>
           </Grid>
           <Grid item>
-            <img src={forwardArrow} alt='next question' />
+            <IconButton
+              disabled={navigationNextDisabled()}
+              onClick={nextQuestion}
+            >
+              <img
+                src={
+                  navigationNextDisabled() ? forwardArrowDisabled : forwardArrow
+                }
+                alt='next question'
+              />
+            </IconButton>
           </Grid>
         </Grid>
         <Grid item>
