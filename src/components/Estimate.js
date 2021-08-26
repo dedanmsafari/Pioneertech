@@ -44,6 +44,7 @@ import android from '../assets/android.svg';
 import globe from '../assets/globe.svg';
 import biometrics from '../assets/biometrics.svg';
 import estimateAnimation from '../animations/estimateAnimation/data.json';
+import f from 'compose-function';
 import { set } from 'harmony-reflect';
 
 const useStyles = makeStyles((theme) => ({
@@ -62,6 +63,17 @@ const useStyles = makeStyles((theme) => ({
     '&:hover': {
       backgroundColor: theme.palette.secondary.light,
     },
+  },
+  message: {
+    border: `2px solid ${theme.palette.common.Green}`,
+    marginTop: '2em',
+    borderRadius: 5,
+  },
+  specialText: {
+    fontSize: '1.5rem',
+    color: theme.palette.common.Green,
+    fontWeight: 700,
+    fontFamily: 'Lato',
   },
 }));
 
@@ -328,6 +340,18 @@ export default function Estimate() {
   const matchesXS = useMediaQuery(theme.breakpoints.down('xs'));
 
   const [questions, setQuestions] = useState(defaultQuestions);
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [name, setName] = useState('');
+
+  const [email, setEmail] = useState('');
+  const [emailHelper, setEmailHelper] = useState('');
+
+  const [phone, setPhone] = useState('');
+  const [phoneHelper, setPhoneHelper] = useState('');
+
+  const [message, setMessage] = useState('');
+
+  const [total, setTotal] = useState(0);
 
   const defaultOptions = {
     loop: true,
@@ -336,6 +360,40 @@ export default function Estimate() {
     rendererSettings: {
       preserveAspectRatio: 'xMidYMid slice',
     },
+  };
+
+  const onChange = (event) => {
+    let valid;
+
+    switch (event.target.id) {
+      case 'email':
+        setEmail(event.target.value);
+        valid = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(
+          event.target.value
+        );
+
+        if (!valid) {
+          setEmailHelper(`${event.target.value} is not a valid email address`);
+        } else {
+          setEmailHelper('');
+        }
+
+        break;
+
+      case 'phone':
+        setPhone(event.target.value);
+        valid = /^([0|\+[0-9]{1,5})?([0-9]{10})$/.test(event.target.value);
+
+        if (!valid) {
+          setPhoneHelper(`${event.target.value} is not a valid phone number`);
+        } else {
+          setPhoneHelper('');
+        }
+        break;
+
+      default:
+        break;
+    }
   };
 
   const nextQuestion = () => {
@@ -427,6 +485,32 @@ export default function Estimate() {
         setQuestions(newQuestions);
     }
   };
+
+  const getTotal = () => {
+    let cost = 0;
+
+    const selections = questions
+      .map((question) => question.options.filter((option) => option.selected))
+      .filter((question) => question.length > 0);
+
+    selections.map((options) => options.map((option) => (cost += option.cost)));
+
+    if (questions.length > 2) {
+      const userCost = questions
+        .filter(
+          (question) => question.title === 'How many users do you expect?'
+        )
+        .map((question) =>
+          question.options.filter((option) => option.selected)
+        )[0][0].cost;
+
+      cost -= userCost;
+      cost *= userCost;
+    }
+
+    setTotal(cost);
+  };
+
   return (
     <Grid container direction='row'>
       <Grid item container direction='column' lg>
@@ -501,7 +585,7 @@ export default function Estimate() {
                       >
                         {option.title}
                       </Typography>
-                      <Typography variant='caption' alignItems='center'>
+                      <Typography variant='caption'>
                         {option.subtitle}
                       </Typography>
                     </Grid>
@@ -552,11 +636,94 @@ export default function Estimate() {
           </Grid>
         </Grid>
         <Grid item>
-          <Button variant='contained' className={classes.estimateButton}>
+          <Button
+            variant='contained'
+            className={classes.estimateButton}
+            onClick={() => {
+              setDialogOpen(true);
+              getTotal();
+            }}
+          >
             Get Estimate
           </Button>
         </Grid>
       </Grid>
+      <Dialog
+        open={dialogOpen}
+        onClose={() => {
+          setDialogOpen(false);
+        }}
+      >
+        <Grid container justify='center'>
+          <Grid item>
+            <Typography variant='h2' align='center'>
+              Estimate
+            </Typography>
+          </Grid>
+        </Grid>
+        <DialogContent>
+          <Grid container>
+            <Grid item container direction='column' style={{ width: '20em' }}>
+              <Grid item style={{ marginBottom: '0.5em' }}>
+                <TextField
+                  label='Name'
+                  id='name'
+                  fullWidth
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                />
+              </Grid>
+              <Grid item style={{ marginBottom: '0.5em' }}>
+                <TextField
+                  label='Email'
+                  error={emailHelper.length !== 0}
+                  helperText={emailHelper}
+                  id='email'
+                  fullWidth
+                  value={email}
+                  onChange={onChange}
+                />
+              </Grid>
+              <Grid item style={{ marginBottom: '0.5em' }}>
+                <TextField
+                  label='Phone'
+                  error={phoneHelper.length !== 0}
+                  helperText={phoneHelper}
+                  fullWidth
+                  id='phone'
+                  value={phone}
+                  onChange={onChange}
+                />
+              </Grid>
+              <Grid item style={{ maxWidth: '20em' }}>
+                <TextField
+                  InputProps={{ disableUnderline: true }}
+                  id='message'
+                  multiline
+                  fullWidth
+                  rows={10}
+                  className={classes.message}
+                  value={message}
+                  onChange={(e) => setMessage(e.target.value)}
+                />
+              </Grid>
+              <Grid item>
+                <Typography variant='body1' paragraph>
+                  We can create this digital solution for an estimated{' '}
+                  <span className={classes.specialText}>
+                    ${total.toFixed(2)}
+                  </span>
+                </Typography>
+                <Typography variant='body1' paragraph>
+                  Fill out your name, phone,number and email,place your request
+                  and we'll get back to you with details moving forward and a
+                  final price
+                </Typography>
+              </Grid>
+            </Grid>
+          </Grid>
+        </DialogContent>
+      </Dialog>
     </Grid>
   );
 }
